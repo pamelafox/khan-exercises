@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html data-require="math">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>HTML Headers</title>
+    <script src="../khan-exercise.js"></script>
+</head>
+<body>
+
+    <div class="exercise">
+
+        <div class="problems">
+            <div>
+                <div class="vars">
+                    <var id="NUM_HEADERS">randRange( 2, 5 )</var>
+                </div>
+
+                <div class="question">
+                    <p>Write HTML tags that will create <var>NUM_HEADERS</var> headers of decreasing size.
+                        Start with the biggest possible!
+                    <br>
+                    <textarea class="html-guess" rows="5" style="width:90%;"></textarea>
+                    <div class="html-preview"></div>
+
+                </div>
+                
+                <div class="solution" data-type="custom">
+                    <div class="instructions"></div>
+                    <div class="guess">_.map($("div.question textarea"), function(el) { return $(el).val() })</div>
+                    <div class="validator-function">
+                        if (guess === '') return '';
+                        var $guessHtml = $('&lt;div&gt;&lt;/div&gt;').html(guess[0]);
+                        $('.html-preview').html(guess[0]);
+                        var selector = '';
+                        if ($guessHtml.children().size() != NUM_HEADERS) {
+                            return 'We didn\'t see enough tags for all the headers!';
+                        }
+                        for (var i = 1; i &lt; (NUM_HEADERS+1); i++) {
+                            selector = 'h' + i;
+                            var $child = $guessHtml.children().eq(i-1);
+                            if (!$child.is(selector)) {
+                                if ($guessHtml.find(selector).size() == 1) {
+                                    return 'It looks like your tags are out of order?'
+                                } else {
+                                    return 'It looks like you\'re missing an ' + selector;
+                                }
+                            }
+                        }
+                        return true;
+                    </div>
+                    <div class="show-guess">
+                        _(guess).each(function(g, n) {
+                            $("div.question textarea").eq(n).val(g);
+                        });
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hints">
+        </div>
+
+    </div>
+</body>
+</html>
