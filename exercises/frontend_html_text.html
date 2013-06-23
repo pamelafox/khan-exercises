@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html data-require="math codemirror graphie">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>HTML Text Formatting</title>
+    <script src="../khan-exercise.js"></script>
+    <link rel="stylesheet" href="../css/codemirror.css">
+    <!-- Code mirror ? -->
+    <style type="text/css">
+    .html-guess {
+        width: 90%;
+        height: 200px;
+    }
+    </style>
+</head>
+<body>
+
+    <script>
+    function getGuess() {
+        return _.map($("div.question textarea"), function(el) { return $(el).val() });
+    }
+    function showGuess() {
+        _(guess).each(function(g, n) {
+            $("div.question textarea").eq(n).val(g);
+        });
+    }
+    function getGuessHtml(guess) {
+        var $guessHtml = $('<div></div>').html(guess[0]);
+        return $guessHtml;
+    }
+
+    function setupEditor() {
+        $('.html-guess').each(function() {
+            var cm = CodeMirror.fromTextArea(this, {autofocus: true});
+            cm.setSize(null, 150);
+            cm.on("change", function(cm, change) {
+              $('.html-preview').contents().find('html').html(cm.getValue());
+              $('.html-guess').val(cm.getValue());
+            });
+        });
+    }
+
+    function errorWithNumTags($guessHtml, num, tagName) {
+        if ($guessHtml.children().size() < num) {
+            return 'It looks like you didn\'t write enough tags?';
+        } else if ($guessHtml.children().size() > num) {
+            return 'It looks like you wrote too many tags?';
+        } 
+        if (tagName && $guessHtml.children().filter(tagName).size() != num) {
+            if (num == 1) {
+                return 'It looks like you didn\'t write a &lt;' + tagName + '&gt; tag?';
+            } else {
+                return 'It looks like you didn\'t write enough &lt;' + tagName + '&gt; tags?';
+            }
+        }
+    }
+
+    </script>
+
+        <script>
+        // debounce this
+        // security issue, do teachers/students view eachother's exercises?
+        window.onload = function() {
+
+            $('.html-guess').each(function() {
+                // Not loaded yet, what's the event for loaded?
+                //var myCodeMirror = CodeMirror.fromTextArea(this);
+            });
+            
+        }; 
+
+        </script>
+
+    <div class="exercise">
+
+        <div class="problems">
+
+
+
+            <div class="problem">
+                <div class="question">
+                    <p>Which tag would you use for the most important header on the page?</p>
+                </div>
+                
+                <div class="solution" data-type="regex">&lt;?h1&gt;?</div>
+
+            </div>
+
+
+            <div class="problem">
+                <div class="vars">
+                    <var id="NUM_HEADERS">randRange( 2, 5 )</var>
+                </div>
+
+                <div class="question">
+                    <p>Write HTML tags that will create <var>NUM_HEADERS</var> headers of decreasing size.
+                        Start with the biggest possible!
+                    <br>
+                    <textarea class="html-guess" rows="5"></textarea>
+                    <iframe class="html-preview"></iframe>
+
+                </div>
+                
+                <div class="graphie">setupEditor();</div>
+
+                <div class="solution" data-type="custom">
+                    <div class="instructions"></div>
+                    <div class="guess">getGuess()</div>
+                    <div class="validator-function">
+                        if (guess === '') return '';
+                        var $guessHtml = getGuessHtml(guess);
+                        var selector = '';
+                        var errors = errorWithNumTags($guessHtml, NUM_HEADERS);
+                        if (errors) return errors;
+
+                        for (var i = 1; i &lt; (NUM_HEADERS+1); i++) {
+                            selector = 'h' + i;
+                            var $child = $guessHtml.children().eq(i-1);
+                            if (!$child.is(selector)) {
+                                if ($guessHtml.find(selector).size() == 1) {
+                                    return 'It looks like your tags are out of order?'
+                                } else {
+                                    return 'It looks like you\'re missing an ' + selector;
+                                }
+                            }
+                        }
+                        return true;
+                    </div>
+                    <div class="show-guess">showGuess()</div>
+                </div>
+            </div>
+
+
+
+
+            <div class="problem">
+                <div class="vars">
+                    <var id="NUM_TAGS">randRange(2, 4)</var>
+                </div>
+
+                <div class="question">
+                    <p>Create <var>NUM_TAGS</var> paragraphs of text. You can use filler text from
+                        <a href="http://veggieipsum.com" target="_blank">veggieipsum.com</a>,
+                        <a href="http://hipsteripsum.com" target="_blank">hipsteripsum.com</a>,
+                        or make it up yourself!
+                    <br>
+                    <textarea class="html-guess" rows="5"></textarea>
+                    <iframe class="html-preview"></iframe>
+                </div>
+                
+                <div class="graphie">setupEditor();</div>
+
+                <div class="solution" data-type="custom">
+                    <div class="instructions"></div>
+                    <div class="guess">getGuess()</div>
+                    <div class="validator-function">
+                        var $guessHtml = getGuessHtml(guess);
+                        var errors = errorWithNumTags($guessHtml, NUM_TAGS, 'p');
+                        return errors || true;
+                    </div>
+                    <div class="show-guess">showGuess()</div>
+                </div>
+            </div>
+
+
+            <div class="problem">
+                <div class="vars">
+                    <var id="NUM_TAGS">randRange(2, 4)</var>
+                </div>
+
+                <div class="question">
+                    <p>Write a poem that is <var>NUM_TAGS</var> lines long.</p>
+
+                    <textarea class="html-guess" rows="5"></textarea>
+                    <iframe class="html-preview"></iframe>
+                </div>
+                
+                <div class="graphie">setupEditor();</div>
+
+                <div class="solution" data-type="custom">
+                    <div class="instructions"></div>
+                    <div class="guess">getGuess()</div>
+                    <div class="validator-function">
+                        var $guessHtml = getGuessHtml(guess);
+                        // They could have one less BR and that'd be fine
+                        var errors = errorWithNumTags($guessHtml, NUM_TAGS, 'br');
+                        var errors2 = errorWithNumTags($guessHtml, NUM_TAGS-1, 'br');
+                        if (errors &amp;&amp; errors2) return errors;
+                        return true;
+                    </div>
+                    <div class="show-guess">showGuess()</div>
+                </div>
+            </div>
+
+
+            <div class="problem">
+                <div class="vars">
+                    <var id="LIST_TYPE">randFromArray(['numbered', 'bulleted'])</var>
+                    <var id="NUM_ITEMS">randRange(2, 4)</var>
+                </div>
+
+                <div class="question">
+                    <p>Write HTML for a <var>LIST_TYPE</var> list that has <var>NUM_ITEMS</var> items in it.
+                    </p>
+                    <textarea class="html-guess" rows="5"></textarea>
+                    <iframe class="html-preview"></iframe>
+                </div>
+                
+                <div class="graphie">setupEditor();</div>
+
+                <div class="solution" data-type="custom">
+                    <div class="instructions"></div>
+                    <div class="guess">getGuess()</div>
+                    <div class="validator-function">
+                        var listTag = {'numbered': 'ol', 'bulleted': 'ul'}[LIST_TYPE];
+                        var $guessHtml = getGuessHtml(guess);
+
+                        var errors = errorWithNumTags($guessHtml, 1, 'ul');
+                        if (errors) return errors;
+
+                        // Distinguish direct vs. indirect
+                        if ($guessHtml.find('li').size() != NUM_ITEMS) {
+                            return 'It looks like you didn\'t write enough li tags?';
+                        }
+
+                        if ($guessHtml.find('li').parents('ul').size() === 0) {
+                            return 'It looks like your tag nesting is wrong?';
+                        }
+
+                        return true;
+                    </div>
+                    <div class="show-guess">showGuess()</div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+</body>
+</html>
